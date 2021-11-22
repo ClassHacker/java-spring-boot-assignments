@@ -1,31 +1,41 @@
-package com.example.entity;
+package com.example.demo;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Entity
+@Transactional
 @Table(name = "customers")
 public class Customer {
 	
-	public Customer(long accountId, long profileId, String accountName, BigDecimal totalAccountBalance) {
+	public Customer(long accountId, long profileId, String accountName, BigDecimal totalAccountBalance, List<Holding> holdings) {
 		super();
 		this.accountId = accountId;
 		this.profileId = profileId;
 		this.accountName = accountName;
 		this.totalAccountBalance = totalAccountBalance;
+		this.holdings = holdings;
+	}
+	
+	public Customer() {
+		super();
 	}
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long accountId;
 	
-	@Column(name = "Profile Id")
+	@Column(name = "Profile_Id")
 	private long profileId;
 	
 	@Column(name = "Name")
@@ -33,6 +43,14 @@ public class Customer {
 	
 	@Column(name = "Balance")
 	private BigDecimal totalAccountBalance;
+
+	//@OneToOne(cascade = CascadeType.ALL)
+	//private Holding listOfHoldings;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "AccountId", referencedColumnName = "accountId",nullable = false)
+	private List<Holding> holdings;
+	
 	
 	public long getAccountId() {
 		return accountId;
@@ -52,6 +70,13 @@ public class Customer {
 	public void setAccountName(String accountName) {
 		this.accountName = accountName;
 	}
+	
+	public List<Holding> getHoldings() {
+		return holdings;
+	}
+	public void setHoldings(List<Holding> holdings) {
+		this.holdings = holdings;
+	}
 	public BigDecimal getTotalAccountBalance() {
 		return totalAccountBalance;
 	}
@@ -59,13 +84,12 @@ public class Customer {
 		this.totalAccountBalance = totalAccountBalance;
 	}
 	/*
-	@Column(name = "Holdings")
-	private ArrayList<Holding> listOfHoldings=new ArrayList<Holding>();
-	public ArrayList<Holding> getlistOfHoldings() {
+	public Holding getlistOfHoldings() {
 		return listOfHoldings;
 	}
-	public void setlistOfHoldings(ArrayList<Holding> listOfHoldings) {
+	public void setlistOfHoldings(Holding listOfHoldings) {
 		this.listOfHoldings = listOfHoldings;
 	}
 	*/
+	
 }

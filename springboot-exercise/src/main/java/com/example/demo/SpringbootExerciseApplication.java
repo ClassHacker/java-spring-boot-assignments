@@ -1,4 +1,4 @@
-package com.example.springboot;
+package com.example.demo;
 
 //import java.util.Arrays;
 
@@ -11,15 +11,6 @@ import org.springframework.context.ApplicationContext;
 public class SpringbootExerciseApplication {
 
 	public static void main(String[] args) {		
-		ApplicationContext ctx = SpringApplication.run(SpringbootExerciseApplication.class, args);
-		
-		/*
-		 * String[] beanNames = ctx.getBeanDefinitionNames();
-		 * 
-		 * Arrays.sort(beanNames);
-		 * 
-		 * for (String beanName : beanNames) { System.out.println(beanName); }
-		 */
+	 SpringApplication.run(SpringbootExerciseApplication.class, args);
 	}
-
 }
