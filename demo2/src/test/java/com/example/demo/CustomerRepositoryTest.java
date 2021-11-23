@@ -2,7 +2,6 @@ package com.example.demo;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
@@ -28,8 +27,8 @@ public class CustomerRepositoryTest {
 	public void createCustomerTest() {
 		
 		Customer c = new Customer(111L, 1111L, "Ajay", BigDecimal.valueOf(213456786), holdings);
-		repo.save(c);
-		Assertions.assertThat(c.getAccountId()).isEqualTo(111);
+		Customer newlyCretaedCustomer = repo.save(c);
+		Assertions.assertThat(newlyCretaedCustomer.getAccountId()).isEqualTo(111);
 	}
 	
 	@Test
