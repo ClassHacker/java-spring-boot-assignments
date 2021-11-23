@@ -26,10 +26,10 @@ public class CustomerService implements CustomerServicInf {
 		Optional<Customer> customerDb = customerRepo.findById(c.getAccountId());
 		if (customerDb.isPresent()) {
 			Customer cUpdate = customerDb.get();
-			cUpdate.setAccountId(c.getAccountId());
 			cUpdate.setAccountName(c.getAccountName());
 			cUpdate.setProfileId(c.getProfileId());
 			cUpdate.setHoldings(c.getHoldings());
+			cUpdate.setTotalAccountBalance(c.getTotalAccountBalance());
 			customerRepo.save(cUpdate);
 			return cUpdate;
 		}
