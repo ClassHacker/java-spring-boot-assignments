@@ -63,11 +63,11 @@ public class CustomerService implements CustomerServicInf {
 			if (updateThis == null)
 			{
 				System.out.println("No account found with id : "+id);
-				throw new ResourceNotFoundException("Customer Not Found having id : "+c.getAccountId());
+				throw new ResourceNotFoundException("Customer Not Found having id : "+id);
 			}
 		}
 		catch(Exception e) {
-			throw new ResourceNotFoundException("Customer Not Found having id : "+c.getAccountId());
+			throw new ResourceNotFoundException("Customer Not Found having id : "+id);
 		}
 		return updateThis;
 	}

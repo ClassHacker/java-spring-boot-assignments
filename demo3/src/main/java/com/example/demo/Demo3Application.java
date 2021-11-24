@@ -21,6 +21,7 @@ public class Demo3Application {
 		catch (Exception e) {
 			System.out.println("data.json not created");
 		}
+		
 		SpringApplication.run(Demo3Application.class, args);
 	}
 }

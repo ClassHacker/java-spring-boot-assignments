@@ -1,6 +1,7 @@
 
 package com.example.demo;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -8,8 +9,14 @@ import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +27,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
+@TestInstance(Lifecycle.PER_CLASS)
+@TestMethodOrder(OrderAnnotation.class)
 class Demo3ApplicationTests {
 
 	@Autowired
@@ -29,49 +38,54 @@ class Demo3ApplicationTests {
 	
 	Customer account;
 	List<Holding> holdings = new LinkedList<Holding>();
+	//@MockBean
 	File json;
 	
-	@BeforeEach
+	@BeforeAll
 	public void setUp() {
 		json = new File("data.json");
 		account = new Customer(111L, 1111L, "AJay", BigDecimal.valueOf(213456786), holdings);
 	}
+	@AfterAll
+	public void cleanUp() {
+		json.delete();
+	}
 
 	@Test 
+	@Order(1)
 	public void createCustomerTest() throws Exception {
 		service.createCustomer(account, json);
-		//om.writeValue(json, account);
 		assertEquals(account.getAccountId(),
-				om.readValue(new File("data.json"),
+				om.readValue(json,
 						new TypeReference<List<Customer>>(){}).get(0).getAccountId());
 	}
 
-	/*@Test
-	public void getCustomersTest() {
-		when(repo.findAll()).thenReturn(
-				Stream.of(new Customer(111L, 1111L, "Ajay", BigDecimal.valueOf(213456786), holdings)).toList());
-		Assertions.assertThat(service.getAllCustomer().size()).isGreaterThan(0);
+	@Test
+	@Order(2)
+	public void getCustomersTest() throws Exception {
+		service.getAllCustomer(json);
+		assertThat(om.readValue(json,
+						new TypeReference<List<Customer>>(){}).size()).isGreaterThan(0);
 	}
 
 	@Test()
-	public void updateCustomerTest() {
-		Customer account = new Customer(111L, 1111L, "Rohit", BigDecimal.valueOf(213456786), holdings);
-		try {
-			service.updateCustomer(account);
-		} catch (ResourceNotFoundException e) {
-			Assertions.assertThat(e.getMessage()).isEqualTo("Customer Not Found with id : 111");
-		}
+	@Order(3)
+	public void updateCustomerTest() throws Exception {
+		Customer account = new Customer(111L, 1000L, "Rohit", BigDecimal.valueOf(987654321), holdings);
+		service.updateCustomer(111L, account, json);
+		assertEquals(account.getAccountName(),
+				om.readValue(new File("data.json"),
+						new TypeReference<List<Customer>>(){}).get(0).getAccountName());
 	}
-
+		
 	@Test
-	public void deleteCustomerTest() {
-		Customer c = new Customer(111L, 1111L, "Ajay", BigDecimal.valueOf(213456786), holdings);
-		long id = c.getAccountId();
-		try {
-			service.deleteCustomer(id);
-		} catch (ResourceNotFoundException e) {
-			Assertions.assertThat(e.getMessage()).isEqualTo("Customer Not Found with id : 111");
-		}
+	@Order(4)
+	public void deleteCustomerTest() throws Exception {
+		long id = account.getAccountId();
+		service.deleteCustomer(id, json);
+		assertEquals(0,
+				om.readValue(new File("data.json"),
+						new TypeReference<List<Customer>>(){}).size());
 
-	}*/
+	}
 }
